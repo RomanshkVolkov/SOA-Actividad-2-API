@@ -170,6 +170,26 @@ namespace Repository.DAO
             return isDeleted;
         }
 
+        public List<EmpleadoRecordatorio> GetPersonasByDeadLineToday()
+        {
+            List<EmpleadoRecordatorio> list = new List<EmpleadoRecordatorio>();
+
+            list = _context.Activos_Empleados.Where(list => list.FechaEntrega == DateTime.Now.Date).Select(list =>
+            
+                    new EmpleadoRecordatorio
+                    {
+                        Id = list.Empleado.Persona.Id,
+                        Nombre = list.Empleado.Persona.Nombre,
+                        Apellidos = list.Empleado.Persona.Apellidos,
+                        Correo = list.Empleado.Persona.Correo,
+                        Activo = list.Activo.Nombre,
+                    }
+            )
+                .ToList();
+
+            return list;
+        }
+
         //    public async Task<List<T>> ReadCRUD<T>()
         //    {
         //        List<T> list = new List<T>();

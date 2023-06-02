@@ -84,11 +84,15 @@ namespace Repository.DAO
                 Activo activoEditado = _context.Activos.FirstOrDefault(x => x.Id == activo.id);
                 if (activoEditado == null)
                     return false;
-
+                Console.WriteLine(activo.id);
+                Console.WriteLine(activo.name);
+                Console.WriteLine(activo.description);
+                Console.WriteLine(activoEditado.Id);
                 // Actualiza los campos del activo editado.
                 activoEditado.Nombre = activo.name;
                 activoEditado.Descripcion = activo.description;
                 activoEditado.Estado = activo.releaseDate != null;
+
 
                 // Encuentra el activo asignable, si existe.
                 Activo_Empleado activoAsignable = _context.Activos_Empleados.FirstOrDefault(x => x.Activo.Id == activo.id);
@@ -105,8 +109,8 @@ namespace Repository.DAO
                 {
                     // Encuentra el empleado al que se le asignará el activo.
                     var empleado = _context.Empleados.FirstOrDefault(x => x.Id == activo.employeeId);
-                    if (empleado == null) return false;
-
+                    if (empleado != null)
+                    {
                     // Crea y asigna el nuevo activo al empleado.
                     Activo_Empleado nuevoActivoEmpleado = new()
                     {
@@ -120,14 +124,19 @@ namespace Repository.DAO
 
                     // Actualiza el estado del activo editado.
                     activoEditado.Estado = false;
+
+                    }
+
                 }
 
+                _context.Activos.Update(activoEditado);
                 // Guarda los cambios.
                 _context.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // Algo salió mal, así que devuelve false.
+                Console.WriteLine(e.Message);
                 return false;
             }
 

@@ -11,5 +11,6 @@ namespace Service.IServices
         List<LoginPersona> SearchEmployee();
         bool UpdatePerson(UpdatePersonRequest data);
         bool DeletePerson(int id);
+        List<EmpleadoRecordatorio> GetPersonasByDeadLineToday();
     }
 }

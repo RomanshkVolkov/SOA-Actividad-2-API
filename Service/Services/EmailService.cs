@@ -51,6 +51,46 @@ namespace Service.Services
             smtpClient.Send(mailMessage);
             });
         }
+
+        public void SendRemembersReturn(string filePath)
+        {
+
+            string subject = "Recordatorio!!! Hoy es tu fecha de entrega de activo {{activo}}";
+            var empleados = _persona.GetEmpleados();
+            string htmlContent = System.IO.File.ReadAllText(filePath);
+
+            // Configurar los detalles del remitente y destinatario
+            string senderEmail = "202000075@estudiantes.upqroo.edu.mx";
+            string senderPassword = "upqroopasskey1";
+
+            // Configurar el cliente SMTP
+            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
+            smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
+            smtpClient.EnableSsl = true;
+
+            var personas = _persona.GetPersonasByDeadLineToday();
+
+            // Enviar el correo electrónico
+            personas.ForEach((persona) =>
+            {
+                // Lógica para enviar el correo electrónico a cada empleado
+                string to = persona.Correo;
+                MailAddress fromAddress = new MailAddress(senderEmail);
+                MailAddress toAddress = new MailAddress(to);
+                // Configurar el mensaje de correo electrónico
+                MailMessage mailMessage = new MailMessage(fromAddress, toAddress);
+                mailMessage.Subject = subject.Replace("{{activo}}", $"{persona.Activo}.");
+
+                // Adjuntar el contenido HTML como una vista alternativa
+                string body = htmlContent.Replace("{{nombreEmpleado}}", $"{persona.Nombre} {persona.Apellidos}").Replace("{{producto}}", persona.Activo);
+                AlternateView htmlView = AlternateView.CreateAlternateViewFromString(body, null, "text/html");
+                mailMessage.AlternateViews.Add(htmlView);
+
+                smtpClient.Send(mailMessage);
+            });
+
+
+        }
     }
 
 }

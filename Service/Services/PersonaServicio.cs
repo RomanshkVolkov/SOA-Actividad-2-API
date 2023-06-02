@@ -128,5 +128,20 @@ namespace Service.Services
             }
                 return findUser;
         }
+
+        public List<EmpleadoRecordatorio> GetPersonasByDeadLineToday()
+        {
+            List<EmpleadoRecordatorio> personas = new List<EmpleadoRecordatorio>();
+
+            try
+            {
+                personas = personaRepositorio.GetPersonasByDeadLineToday();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+            return personas;
+        }
     }
 }
